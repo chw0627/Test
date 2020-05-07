@@ -28,9 +28,9 @@ class MyCollectionViewCell: UICollectionViewCell {
         self.addSubview(idLabel)
         
         titleLabel = UILabel(frame: CGRect(x: 0, y: w/8, width: w/4, height: w/4-w/8))
-        titleLabel.textAlignment = .left
+        titleLabel.textAlignment = .center
         titleLabel.textColor = UIColor.black
-        titleLabel.lineBreakMode = NSLineBreakMode.byCharWrapping
+        titleLabel.lineBreakMode = NSLineBreakMode.byWordWrapping
         titleLabel.numberOfLines = 0
         titleLabel.font = titleLabel.font.withSize(CGFloat(w/20))
         self.addSubview(titleLabel)

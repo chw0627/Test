@@ -13,7 +13,6 @@ class JsonPlaceHolderViewController: UIViewController, URLSessionDelegate, URLSe
     var itemId = [String]()
     var itemTitle = [String]()
     var thumbnailUrl = [String]()
-    var activityView = UIActivityIndicatorView(style: .whiteLarge)
     let fullScreenSize:CGSize = UIScreen.main.bounds.size
     let apiURL = "https://jsonplaceholder.typicode.com/photos"
     fileprivate lazy var myCollectionView : UICollectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: UICollectionViewFlowLayout())
@@ -65,9 +64,8 @@ class JsonPlaceHolderViewController: UIViewController, URLSessionDelegate, URLSe
             print("儲存資訊失敗")
         }
         DispatchQueue.main.async {
-            self.activityView.stopAnimating()
-            self.activityView.removeFromSuperview()
             self.myCollectionView.reloadData()
+            self.removeSpinner()
         }
     }
     
@@ -83,6 +81,9 @@ class JsonPlaceHolderViewController: UIViewController, URLSessionDelegate, URLSe
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
+        self.showSpinner(onView: self.view)
+        self.jsonGet(apiURL)
+
         let itemSpace: CGFloat = 0
         let columnCount: CGFloat = 4
         let flowLayout = UICollectionViewFlowLayout()
@@ -97,13 +98,9 @@ class JsonPlaceHolderViewController: UIViewController, URLSessionDelegate, URLSe
         myCollectionView.dataSource = self
         myCollectionView.bounces = false
         self.view.addSubview(myCollectionView)
-        self.jsonGet(apiURL)
     }
     
     func jsonGet(_ myUrl :String) {
-        activityView.center = self.view.center
-        self.view.addSubview(activityView)
-        activityView.startAnimating()
         if let url = URL(string: myUrl) {
             // 設置為預設的 session 設定
             let sessionWithConfigure = URLSessionConfiguration.default
@@ -152,4 +149,30 @@ class JsonPlaceHolderViewController: UIViewController, URLSessionDelegate, URLSe
     }
     */
 
+}
+
+var vSpinner : UIView?
+
+extension UIViewController {
+    func showSpinner(onView : UIView) {
+        let spinnerView = UIView.init(frame: onView.bounds)
+        spinnerView.backgroundColor = UIColor.init(red: 0.5, green: 0.5, blue: 0.5, alpha: 0.5)
+        let ai = UIActivityIndicatorView.init(style: .whiteLarge)
+        ai.startAnimating()
+        ai.center = spinnerView.center
+        
+        DispatchQueue.main.async {
+            spinnerView.addSubview(ai)
+            onView.addSubview(spinnerView)
+        }
+        
+        vSpinner = spinnerView
+    }
+    
+    func removeSpinner() {
+        DispatchQueue.main.async {
+            vSpinner?.removeFromSuperview()
+            vSpinner = nil
+        }
+    }
 }
